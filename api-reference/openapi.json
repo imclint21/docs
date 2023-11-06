@@ -1,195 +1,2717 @@
 {
-  "openapi": "3.0.1",
-  "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
-    "license": {
-      "name": "MIT"
-    },
-    "version": "1.0.0"
-  },
-  "servers": [
-    {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
-    }
-  ],
-  "paths": {
-    "/plants": {
-      "get": {
-        "description": "Returns all plants from the system that the user has access to",
-        "parameters": [
-          {
-            "name": "limit",
-            "in": "query",
-            "description": "The maximum number of results to return",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "description": "Creates a new plant in the store",
-        "requestBody": {
-          "description": "Plant to add to the store",
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/NewPlant"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "plant response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Plant"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  },
-  "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
-      }
-    }
-  }
+"openapi": "3.0.1",
+"info": {
+"title": "HypeProxy.io API v3.0",
+"description": "Official HypeProxy.io Public API - You should use a `JWT Token` than can also be used as `apikey` URL parameter.",
+"termsOfService": "https://hypeproxy.io/terms-of-service?utm_source=api&utm_campaign=swagger&utm_campaign=terms_of_service_link",
+"contact": {
+"name": "HypeProxy.io",
+"url": "https://hypeproxy.io/?utm_source=api&utm_campaign=swagger&utm_campaign=website_link"
+},
+"license": {
+"name": "Read API Documentation",
+"url": "https://docs.hypeproxy.io?utm_source=api&utm_campaign=swagger&utm_campaign=documentation_link"
+},
+"version": "3.0"
+},
+"paths": {
+"/v3/authentication/sign-in": {
+"post": {
+"tags": [
+"Authentication"
+],
+"summary": "Sign in to HypeProxy.io.",
+"requestBody": {
+"description": "Contains the email and password.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/SignInRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/TokenResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/proxies": {
+"get": {
+"tags": [
+"Proxies"
+],
+"summary": "Get all the proxies of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Proxy"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/proxies/products/{productId}": {
+"get": {
+"tags": [
+"Proxies"
+],
+"summary": "Get proxies for specific product type.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Proxy"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/proxies/purchases/{purchaseId}": {
+"get": {
+"tags": [
+"Proxies"
+],
+"summary": "Get proxies for a specific purchase Id.",
+"parameters": [
+{
+"name": "purchaseId",
+"in": "path",
+"description": "Purchase Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Proxy"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/proxies/{proxyId}": {
+"get": {
+"tags": [
+"Proxies"
+],
+"summary": "Get a specific proxy from its Id.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Proxy"
+}
+}
+}
+}
+}
+},
+"patch": {
+"tags": [
+"Proxies"
+],
+"summary": "Update a proxy.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "This is the new comment.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/PatchProxyRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/purchases": {
+"post": {
+"tags": [
+"Purchases"
+],
+"summary": "Create a new purchase.",
+"requestBody": {
+"description": "Purchase model.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CreatePurchaseRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+},
+"get": {
+"tags": [
+"Purchases"
+],
+"summary": "Get all the purchases of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Purchase"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/purchases/{purchaseId}": {
+"get": {
+"tags": [
+"Purchases"
+],
+"summary": "Get a purchase from its Id.",
+"parameters": [
+{
+"name": "purchaseId",
+"in": "path",
+"description": "Purchase Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Purchase"
+}
+}
+}
+}
+}
+},
+"patch": {
+"tags": [
+"Purchases"
+],
+"summary": "Update a purchase.",
+"parameters": [
+{
+"name": "purchaseId",
+"in": "path",
+"description": "Purchase Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "This is the purchase to update.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/PatchPurchaseRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+},
+"delete": {
+"tags": [
+"Purchases"
+],
+"summary": "Cancel a purchase with automatic renew.",
+"parameters": [
+{
+"name": "purchaseId",
+"in": "path",
+"description": "Purchase Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "Define some options for the cancellation.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/DeletePurchaseRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/purchases/products/{productId}": {
+"get": {
+"tags": [
+"Purchases"
+],
+"summary": "Get purchases related to a product Id.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Purchase"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/development/test": {
+"get": {
+"tags": [
+"Development"
+],
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/development": {
+"post": {
+"tags": [
+"Development"
+],
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/billing/summary": {
+"get": {
+"tags": [
+"Billing"
+],
+"summary": "Calculate the billing summary of the user depending of his subscriptions.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/BillingSummaryResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/billing/details": {
+"get": {
+"tags": [
+"Billing"
+],
+"summary": "Get the billing details of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/BillingDetails"
+}
+}
+}
+}
+}
+},
+"put": {
+"tags": [
+"Billing"
+],
+"summary": "Update the billing details of the user.",
+"requestBody": {
+"description": "",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/UpdateBillingDetailsRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/billing/portal": {
+"get": {
+"tags": [
+"Billing"
+],
+"summary": "Redirect to Stripe billing portal.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/BillingPortalResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/credentials": {
+"get": {
+"tags": [
+"Credentials"
+],
+"summary": "Get all the credentials of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Credential"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/credentials/{credentialId}": {
+"get": {
+"tags": [
+"Credentials"
+],
+"summary": "Get a credential from its Id.",
+"parameters": [
+{
+"name": "credentialId",
+"in": "path",
+"description": "Credential Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Credential"
+}
+}
+}
+}
+}
+},
+"put": {
+"tags": [
+"Credentials"
+],
+"summary": "Update a specific credential from its Id.",
+"parameters": [
+{
+"name": "credentialId",
+"in": "path",
+"description": "Credential Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "Contains desired user and password.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/UpdateCredentialRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/features": {
+"get": {
+"tags": [
+"Features"
+],
+"summary": "Get all the features.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Feature"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/features/{featureId}": {
+"get": {
+"tags": [
+"Features"
+],
+"summary": "Get a feature from its Id.",
+"parameters": [
+{
+"name": "featureId",
+"in": "path",
+"description": "Feature Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Feature"
+}
+}
+}
+}
+}
+}
+},
+"/v3/features/products/{productId}": {
+"get": {
+"tags": [
+"Features"
+],
+"summary": "Get all features for a product Id.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Feature"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/insights/summary/{proxyId}": {
+"get": {
+"tags": [
+"Insights"
+],
+"summary": "Get a summary of insights for a specific proxy.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/InsightsSummaryResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/insights/ping/{proxyId}": {
+"get": {
+"tags": [
+"Insights"
+],
+"summary": "Perform a ping request to the product",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/PingResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/invoices": {
+"get": {
+"tags": [
+"Invoices"
+],
+"summary": "Get all the invoices of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Invoice"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/invoices/{invoiceId}": {
+"get": {
+"tags": [
+"Invoices"
+],
+"summary": "Get an invoice from its Id.",
+"parameters": [
+{
+"name": "invoiceId",
+"in": "path",
+"description": "Invoice Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Invoice"
+}
+}
+}
+}
+}
+}
+},
+"/v3/ip-rotations": {
+"get": {
+"tags": [
+"IpRotations"
+],
+"summary": "Get all IP rotations of the user's products.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/IpRotation"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/ip-rotations/{ipRotationId}": {
+"get": {
+"tags": [
+"IpRotations"
+],
+"summary": "Get an IP rotation from its Id.",
+"parameters": [
+{
+"name": "ipRotationId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/IpRotation"
+}
+}
+}
+}
+}
+}
+},
+"/v3/ip-rotations/proxies/{proxyId}": {
+"get": {
+"tags": [
+"IpRotations"
+],
+"summary": "Find a IP rotation for specific proxy Id.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/IpRotation"
+}
+}
+}
+}
+}
+},
+"patch": {
+"tags": [
+"IpRotations"
+],
+"summary": "Set a new IP rotation for a specific proxy Id.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "Specify the desired IP rotation time.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/PatchIpRotationRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+},
+"delete": {
+"tags": [
+"IpRotations"
+],
+"summary": "Delete an IP rotation from a proxy Id.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/ip-rotations/proxies/{proxyId}/trigger": {
+"post": {
+"tags": [
+"IpRotations"
+],
+"summary": "Execute a manual IP rotation of the proxy.",
+"parameters": [
+{
+"name": "proxyId",
+"in": "path",
+"description": "Proxy Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+},
+{
+"name": "asynchronous",
+"in": "query",
+"description": "",
+"schema": {
+"type": "boolean",
+"default": true
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/IpRotationTriggerResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/locations": {
+"get": {
+"tags": [
+"Locations"
+],
+"summary": "Get all the locations.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Location"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/locations/products/{productId}": {
+"get": {
+"tags": [
+"Locations"
+],
+"summary": "Get all locations for a specific product.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Location"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/locations/{locationId}": {
+"get": {
+"tags": [
+"Locations"
+],
+"summary": "Get a location from its Id.",
+"parameters": [
+{
+"name": "locationId",
+"in": "path",
+"description": "Location Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Location"
+}
+}
+}
+}
+}
+}
+},
+"/v3/prices": {
+"post": {
+"tags": [
+"Prices"
+],
+"summary": "Get a quote for the order.",
+"requestBody": {
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CreatePurchaseRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/products": {
+"get": {
+"tags": [
+"Products"
+],
+"summary": "Get all the products.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Product"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/products/{productId}": {
+"get": {
+"tags": [
+"Products"
+],
+"summary": "Get a product from its Id.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Product"
+}
+}
+}
+}
+}
+}
+},
+"/v3/providers": {
+"get": {
+"tags": [
+"Providers"
+],
+"summary": "Get all the providers.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Provider"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/providers/{providerId}": {
+"get": {
+"tags": [
+"Providers"
+],
+"summary": "Get a provider from its Id.",
+"parameters": [
+{
+"name": "providerId",
+"in": "path",
+"description": "Provider Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Provider"
+}
+}
+}
+}
+}
+}
+},
+"/v3/providers/products/{productId}": {
+"get": {
+"tags": [
+"Providers"
+],
+"summary": "Get all providers for a product Id.",
+"parameters": [
+{
+"name": "productId",
+"in": "path",
+"description": "Product Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Provider"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/providers/locations/{locationId}": {
+"get": {
+"tags": [
+"Providers"
+],
+"summary": "Get all providers for a location Id.",
+"parameters": [
+{
+"name": "locationId",
+"in": "path",
+"description": "Location Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Provider"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/utils/client-ip": {
+"get": {
+"tags": [
+"Utils"
+],
+"summary": "Get the client IP address.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/ClientIpResponse"
+}
+}
+}
+}
+}
+}
+},
+"/v3/tickets": {
+"post": {
+"tags": [
+"Tickets"
+],
+"summary": "Create a new ticket.",
+"requestBody": {
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CreateTicketRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+},
+"get": {
+"tags": [
+"Tickets"
+],
+"summary": "Get all the tickets of the user.",
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Ticket"
+}
+}
+}
+}
+}
+}
+}
+},
+"/v3/tickets/{ticketId}": {
+"get": {
+"tags": [
+"Tickets"
+],
+"summary": "Get a ticket from its Id.",
+"parameters": [
+{
+"name": "ticketId",
+"in": "path",
+"description": "Ticket Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/Ticket"
+}
+}
+}
+}
+}
+},
+"delete": {
+"tags": [
+"Tickets"
+],
+"summary": "Close a ticket from its Id.",
+"parameters": [
+{
+"name": "ticketId",
+"in": "path",
+"description": "Ticket Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+},
+"/v3/tickets/answers/{ticketId}": {
+"get": {
+"tags": [
+"TicketAnswers"
+],
+"summary": "Get all the answers of a ticket from its Id.",
+"parameters": [
+{
+"name": "ticketId",
+"in": "path",
+"description": "Ticket Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"responses": {
+"200": {
+"description": "Success",
+"content": {
+"application/json": {
+"schema": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/TicketAnswer"
+}
+}
+}
+}
+}
+}
+},
+"post": {
+"tags": [
+"TicketAnswers"
+],
+"summary": "Responds to a ticket from its Id.",
+"parameters": [
+{
+"name": "ticketId",
+"in": "path",
+"description": "Ticket Id",
+"required": true,
+"schema": {
+"type": "string",
+"format": "uuid"
+}
+}
+],
+"requestBody": {
+"description": "Contains the answer.",
+"content": {
+"application/json": {
+"schema": {
+"$ref": "#/components/schemas/CreateTicketAnswerRequest"
+}
+}
+}
+},
+"responses": {
+"200": {
+"description": "Success"
+}
+}
+}
+}
+},
+"components": {
+"schemas": {
+"BillingDetails": {
+"required": [
+"address",
+"city",
+"country",
+"zipCode"
+],
+"type": "object",
+"properties": {
+"address": {
+"minLength": 1,
+"type": "string"
+},
+"zipCode": {
+"minLength": 1,
+"type": "string"
+},
+"city": {
+"minLength": 1,
+"type": "string"
+},
+"country": {
+"minLength": 1,
+"type": "string"
+},
+"isCompany": {
+"type": "boolean"
+},
+"companyName": {
+"type": "string",
+"nullable": true
+},
+"companyIdentificationNumber": {
+"type": "string",
+"nullable": true
+},
+"companyVatNumber": {
+"type": "string",
+"nullable": true
+},
+"companyCountry": {
+"type": "string",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"BillingPortalResponse": {
+"type": "object",
+"properties": {
+"returnUrl": {
+"type": "string",
+"format": "uri",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"BillingSummaryResponse": {
+"type": "object",
+"properties": {
+"monthlyCosts": {
+"type": "number",
+"format": "double",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"ClientIpResponse": {
+"type": "object",
+"properties": {
+"clientIp": {
+"type": "string",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"CreatePurchaseRequest": {
+"required": [
+"locationId",
+"productId",
+"providerId"
+],
+"type": "object",
+"properties": {
+"productId": {
+"type": "string",
+"format": "uuid"
+},
+"locationId": {
+"type": "string",
+"format": "uuid"
+},
+"providerId": {
+"type": "string",
+"format": "uuid"
+},
+"paymentMethod": {
+"enum": [
+"CreditCard",
+"Cryptocurrency",
+"Alipay",
+"WebMoney",
+"PayPal"
+],
+"type": "string"
+},
+"billingCycle": {
+"enum": [
+"Monthly",
+"Daily",
+"Weekly",
+"Yearly"
+],
+"type": "string"
+},
+"quantity": {
+"type": "integer",
+"format": "int32"
+},
+"couponCode": {
+"type": "string",
+"nullable": true
+},
+"isAutomaticallyRenewed": {
+"type": "boolean"
+}
+},
+"additionalProperties": false
+},
+"CreateTicketAnswerRequest": {
+"required": [
+"message"
+],
+"type": "object",
+"properties": {
+"message": {
+"minLength": 1,
+"type": "string"
+}
+},
+"additionalProperties": false
+},
+"CreateTicketRequest": {
+"required": [
+"message",
+"priority",
+"subject"
+],
+"type": "object",
+"properties": {
+"subject": {
+"minLength": 1,
+"type": "string"
+},
+"message": {
+"minLength": 1,
+"type": "string"
+},
+"priority": {
+"enum": [
+"Low",
+"Normal",
+"High"
+],
+"type": "string"
+},
+"relatedPurchaseId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"Credential": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"username": {
+"type": "string",
+"nullable": true
+},
+"password": {
+"type": "string",
+"nullable": true
+},
+"authorizedIps": {
+"type": "array",
+"items": {
+"type": "string"
+},
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"DeletePurchaseRequest": {
+"type": "object",
+"properties": {
+"cancellationReason": {
+"type": "string",
+"nullable": true
+},
+"claimRefund": {
+"type": "boolean"
+}
+},
+"additionalProperties": false
+},
+"Feature": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"name": {
+"type": "string",
+"nullable": true
+},
+"description": {
+"type": "string",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"GeolocationDetails": {
+"type": "object",
+"properties": {
+"continent": {
+"type": "string",
+"nullable": true
+},
+"country": {
+"type": "string",
+"nullable": true
+},
+"countryCode": {
+"type": "string",
+"nullable": true
+},
+"countryEmoji": {
+"type": "string",
+"nullable": true
+},
+"region": {
+"type": "string",
+"nullable": true
+},
+"city": {
+"type": "string",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"InsightsSummaryResponse": {
+"type": "object",
+"properties": {
+"remoteIp": {
+"type": "string",
+"nullable": true
+},
+"internetServiceProvider": {
+"type": "string",
+"nullable": true
+},
+"asn": {
+"type": "string",
+"nullable": true
+},
+"trustScore": {
+"type": "integer",
+"format": "int32"
+},
+"geolocationDetails": {
+"$ref": "#/components/schemas/GeolocationDetails"
+}
+},
+"additionalProperties": false
+},
+"Invoice": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"createdAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"updatedAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"status": {
+"enum": [
+"Draft",
+"Issued",
+"Paid",
+"NotPaid",
+"Refunded",
+"Canceled"
+],
+"type": "string"
+},
+"paymentMethod": {
+"enum": [
+"CreditCard",
+"Cryptocurrency",
+"Alipay",
+"WebMoney",
+"PayPal"
+],
+"type": "string"
+},
+"subtotalAmount": {
+"type": "number",
+"format": "double"
+},
+"totalAmount": {
+"type": "number",
+"format": "double"
+},
+"thirdPartyInvoiceId": {
+"type": "string",
+"nullable": true
+},
+"hostedInvoiceUrl": {
+"type": "string",
+"nullable": true
+},
+"hostedInvoicePdfUrl": {
+"type": "string",
+"nullable": true
+},
+"purchaseId": {
+"type": "string",
+"format": "uuid"
+},
+"items": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/InvoiceItem"
+},
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"InvoiceItem": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"name": {
+"type": "string",
+"nullable": true
+},
+"quantity": {
+"type": "integer",
+"format": "int32"
+},
+"unitPrice": {
+"type": "number",
+"format": "double"
+},
+"totalAmount": {
+"type": "number",
+"format": "double"
+},
+"invoiceId": {
+"type": "string",
+"format": "uuid"
+},
+"invoice": {
+"$ref": "#/components/schemas/Invoice"
+}
+},
+"additionalProperties": false
+},
+"IpRotation": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"interval": {
+"type": "number",
+"format": "double",
+"readOnly": true
+}
+},
+"additionalProperties": false
+},
+"IpRotationTriggerResponse": {
+"type": "object",
+"properties": {
+"mode": {
+"type": "string",
+"nullable": true
+},
+"asynchronousOperationId": {
+"type": "string",
+"format": "uuid"
+}
+},
+"additionalProperties": false
+},
+"Location": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"name": {
+"type": "string",
+"nullable": true
+},
+"description": {
+"type": "string",
+"nullable": true
+},
+"countryCode": {
+"enum": [
+"Ad",
+"Ae",
+"Af",
+"Ag",
+"Ai",
+"Al",
+"Am",
+"Ao",
+"Aq",
+"Ar",
+"As",
+"At",
+"Au",
+"Aw",
+"Ax",
+"Az",
+"Ba",
+"Bb",
+"Bd",
+"Be",
+"Bf",
+"Bg",
+"Bh",
+"Bi",
+"Bj",
+"Bl",
+"Bm",
+"Bn",
+"Bo",
+"Bq",
+"Br",
+"Bs",
+"Bt",
+"Bw",
+"By",
+"Bz",
+"Ca",
+"Cd",
+"Cf",
+"Cg",
+"Ch",
+"Ci",
+"Ck",
+"Cl",
+"Cm",
+"Cn",
+"Co",
+"Cr",
+"Cu",
+"Cv",
+"Cw",
+"Cx",
+"Cy",
+"Cz",
+"De",
+"Dj",
+"Dk",
+"Dm",
+"Do",
+"Dz",
+"Ec",
+"Ee",
+"Eg",
+"Eh",
+"Er",
+"Es",
+"Et",
+"Fi",
+"Fj",
+"Fk",
+"Fm",
+"Fo",
+"Fr",
+"Ga",
+"Gb",
+"Gd",
+"Ge",
+"Gf",
+"Gg",
+"Gh",
+"Gi",
+"Gl",
+"Gm",
+"Gn",
+"Gp",
+"Gq",
+"Gr",
+"Gt",
+"Gu",
+"Gw",
+"Gy",
+"Hk",
+"Hn",
+"Hr",
+"Ht",
+"Hu",
+"Id",
+"Ie",
+"Il",
+"Im",
+"In",
+"Io",
+"Iq",
+"Ir",
+"Is",
+"It",
+"Je",
+"Jm",
+"Jo",
+"Jp",
+"Ke",
+"Kg",
+"Kh",
+"Ki",
+"Km",
+"Kn",
+"Kp",
+"Kr",
+"Kw",
+"Ky",
+"Kz",
+"La",
+"Lb",
+"Lc",
+"Li",
+"Lk",
+"Lr",
+"Ls",
+"Lt",
+"Lu",
+"Lv",
+"Ly",
+"Ma",
+"Mc",
+"Md",
+"Me",
+"Mf",
+"Mg",
+"Mh",
+"Mk",
+"Ml",
+"Mm",
+"Mn",
+"Mo",
+"Mp",
+"Mq",
+"Mr",
+"Ms",
+"Mt",
+"Mu",
+"Mv",
+"Mw",
+"Mx",
+"My",
+"Mz",
+"Na",
+"Nc",
+"Ne",
+"Nf",
+"Ng",
+"Ni",
+"Nl",
+"No",
+"Np",
+"Nr",
+"Nu",
+"Nz",
+"Om",
+"Pa",
+"Pe",
+"Pf",
+"Pg",
+"Ph",
+"Pk",
+"Pl",
+"Pm",
+"Pr",
+"Ps",
+"Pt",
+"Pw",
+"Py",
+"Qa",
+"Re",
+"Ro",
+"Rs",
+"Ru",
+"Rw",
+"Sa",
+"Sb",
+"Sc",
+"Sd",
+"Se",
+"Sg",
+"Sh",
+"Si",
+"Sj",
+"Sk",
+"Sl",
+"Sm",
+"Sn",
+"So",
+"Sr",
+"Ss",
+"St",
+"Sv",
+"Sx",
+"Sy",
+"Sz",
+"Tc",
+"Td",
+"Tg",
+"Th",
+"Tj",
+"Tk",
+"Tl",
+"Tm",
+"Tn",
+"To",
+"Tr",
+"Tt",
+"Tv",
+"Tw",
+"Tz",
+"Ua",
+"Ug",
+"Us",
+"Uy",
+"Uz",
+"Vc",
+"Ve",
+"Vg",
+"Vi",
+"Vn",
+"Vu",
+"Wf",
+"Ws",
+"Xk",
+"Ye",
+"Yt",
+"Za",
+"Zm",
+"Zw"
+],
+"type": "string",
+"nullable": true
+},
+"availableStock": {
+"type": "integer",
+"format": "int32"
+},
+"outOfStock": {
+"type": "boolean",
+"readOnly": true
+}
+},
+"additionalProperties": false
+},
+"PatchIpRotationRequest": {
+"required": [
+"interval"
+],
+"type": "object",
+"properties": {
+"interval": {
+"type": "integer",
+"format": "int32"
+}
+},
+"additionalProperties": false
+},
+"PatchProxyRequest": {
+"required": [
+"comment"
+],
+"type": "object",
+"properties": {
+"comment": {
+"maxLength": 50,
+"minLength": 0,
+"type": "string"
+}
+},
+"additionalProperties": false
+},
+"PatchPurchaseRequest": {
+"type": "object",
+"properties": {
+"paymentMethod": {
+"enum": [
+"CreditCard",
+"Cryptocurrency",
+"Alipay",
+"WebMoney",
+"PayPal"
+],
+"type": "string",
+"nullable": true
+},
+"billingCycle": {
+"enum": [
+"Monthly",
+"Daily",
+"Weekly",
+"Yearly"
+],
+"type": "string",
+"nullable": true
+},
+"isAutomaticallyRenewed": {
+"type": "boolean"
+},
+"cyclesQuantity": {
+"type": "integer",
+"format": "int32"
+}
+},
+"additionalProperties": false
+},
+"PingResponse": {
+"type": "object",
+"properties": {
+"isOperational": {
+"type": "boolean"
+},
+"reason": {
+"type": "integer",
+"format": "int32"
+},
+"elapsedMilliseconds": {
+"type": "integer",
+"format": "int64"
+}
+},
+"additionalProperties": false
+},
+"Price": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"paymentMethod": {
+"enum": [
+"CreditCard",
+"Cryptocurrency",
+"Alipay",
+"WebMoney",
+"PayPal"
+],
+"type": "string"
+},
+"billingCycle": {
+"enum": [
+"Monthly",
+"Daily",
+"Weekly",
+"Yearly"
+],
+"type": "string"
+},
+"unitPrice": {
+"type": "number",
+"format": "double"
+},
+"productId": {
+"type": "string",
+"format": "uuid"
+},
+"locationId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+},
+"providerId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+},
+"product": {
+"$ref": "#/components/schemas/Product"
+},
+"location": {
+"$ref": "#/components/schemas/Location"
+},
+"provider": {
+"$ref": "#/components/schemas/Provider"
+},
+"priceTiers": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/PriceTier"
+},
+"nullable": true
+},
+"purchases": {
+"type": "array",
+"items": {
+"$ref": "#/components/schemas/Purchase"
+},
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"PriceTier": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"volumeThreshold": {
+"type": "integer",
+"format": "int32"
+},
+"isInclusiveThreshold": {
+"type": "boolean",
+"nullable": true
+},
+"unitPrice": {
+"type": "number",
+"format": "double"
+},
+"priceId": {
+"type": "string",
+"format": "uuid"
+},
+"price": {
+"$ref": "#/components/schemas/Price"
+}
+},
+"additionalProperties": false
+},
+"Product": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"name": {
+"type": "string",
+"nullable": true
+},
+"shortDescription": {
+"type": "string",
+"nullable": true
+},
+"longDescription": {
+"type": "string",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"Provider": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"name": {
+"type": "string",
+"nullable": true
+},
+"description": {
+"type": "string",
+"nullable": true
+},
+"companyName": {
+"type": "string",
+"nullable": true
+},
+"websiteUrl": {
+"type": "string",
+"nullable": true
+},
+"logoUrl": {
+"type": "string",
+"nullable": true
+},
+"availableStock": {
+"type": "integer",
+"format": "int32"
+},
+"outOfStock": {
+"type": "boolean",
+"readOnly": true
+}
+},
+"additionalProperties": false
+},
+"Proxy": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"purchaseId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+},
+"remoteEntrypoint": {
+"type": "string",
+"nullable": true
+},
+"remoteHostname": {
+"type": "string",
+"nullable": true
+},
+"port": {
+"type": "integer",
+"format": "int32"
+},
+"port2": {
+"type": "integer",
+"format": "int32",
+"nullable": true
+},
+"computeUnitId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+},
+"providerId": {
+"type": "string",
+"format": "uuid"
+},
+"credentialId": {
+"type": "string",
+"format": "uuid"
+}
+},
+"additionalProperties": false
+},
+"Purchase": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"createdAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"updatedAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"liveUntil": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"status": {
+"enum": [
+"Created",
+"Live",
+"Off",
+"GracePeriod",
+"Cancelled"
+],
+"type": "string"
+},
+"isAutomaticallyRenewed": {
+"type": "boolean"
+},
+"paymentMethod": {
+"enum": [
+"CreditCard",
+"Cryptocurrency",
+"Alipay",
+"WebMoney",
+"PayPal"
+],
+"type": "string"
+},
+"billingCycle": {
+"enum": [
+"Monthly",
+"Daily",
+"Weekly",
+"Yearly"
+],
+"type": "string"
+},
+"isTrial": {
+"type": "boolean"
+},
+"productId": {
+"type": "string",
+"format": "uuid"
+},
+"priceId": {
+"type": "string",
+"format": "uuid"
+},
+"price": {
+"$ref": "#/components/schemas/Price"
+},
+"isGracePeriod": {
+"type": "boolean",
+"readOnly": true
+},
+"gracePeriodEnd": {
+"type": "string",
+"format": "date-time",
+"nullable": true,
+"readOnly": true
+},
+"isRefundable": {
+"type": "boolean",
+"readOnly": true
+}
+},
+"additionalProperties": false
+},
+"SignInRequest": {
+"required": [
+"email",
+"password"
+],
+"type": "object",
+"properties": {
+"email": {
+"minLength": 1,
+"type": "string",
+"format": "email"
+},
+"password": {
+"minLength": 1,
+"type": "string",
+"format": "password"
+}
+},
+"additionalProperties": false
+},
+"Ticket": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"createdAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"updatedAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"subject": {
+"type": "string",
+"nullable": true
+},
+"priority": {
+"enum": [
+"Low",
+"Normal",
+"High"
+],
+"type": "string"
+},
+"message": {
+"type": "string",
+"nullable": true
+},
+"isClosed": {
+"type": "boolean"
+},
+"purchaseId": {
+"type": "string",
+"format": "uuid",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"TicketAnswer": {
+"type": "object",
+"properties": {
+"id": {
+"type": "string",
+"format": "uuid"
+},
+"message": {
+"type": "string",
+"nullable": true
+},
+"answeredAt": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+},
+"userId": {
+"type": "string",
+"format": "uuid"
+}
+},
+"additionalProperties": false
+},
+"TokenResponse": {
+"type": "object",
+"properties": {
+"userId": {
+"type": "string",
+"format": "uuid"
+},
+"token": {
+"type": "string",
+"nullable": true
+},
+"tokenExpiration": {
+"type": "string",
+"format": "date-time",
+"nullable": true
+}
+},
+"additionalProperties": false
+},
+"UpdateBillingDetailsRequest": {
+"required": [
+"address",
+"city",
+"companyCountry",
+"companyIdentificationNumber",
+"companyName",
+"country",
+"isCompany",
+"zipCode"
+],
+"type": "object",
+"properties": {
+"fullName": {
+"type": "string",
+"nullable": true
+},
+"address": {
+"minLength": 1,
+"type": "string"
+},
+"zipCode": {
+"minLength": 1,
+"type": "string"
+},
+"city": {
+"minLength": 1,
+"type": "string"
+},
+"country": {
+"minLength": 1,
+"type": "string"
+},
+"isCompany": {
+"type": "boolean"
+},
+"companyName": {
+"minLength": 1,
+"type": "string"
+},
+"companyIdentificationNumber": {
+"minLength": 1,
+"type": "string"
+},
+"companyVatNumber": {
+"type": "string",
+"nullable": true
+},
+"companyCountry": {
+"minLength": 1,
+"type": "string"
+}
+},
+"additionalProperties": false
+},
+"UpdateCredentialRequest": {
+"required": [
+"password",
+"username"
+],
+"type": "object",
+"properties": {
+"username": {
+"maxLength": 21,
+"minLength": 3,
+"pattern": "[0-9a-zA-Z.\\-_]*",
+"type": "string"
+},
+"password": {
+"minLength": 6,
+"type": "string",
+"format": "password"
+},
+"authorizedIps": {
+"type": "array",
+"items": {
+"type": "string"
+},
+"nullable": true
+}
+},
+"additionalProperties": false
+}
+},
+"securitySchemes": {
+"Bearer": {
+"type": "http",
+"description": "Enter your HypeProxy.io API Key.",
+"scheme": "Bearer",
+"bearerFormat": "JWT"
+}
+}
+},
+"security": [
+{
+"Bearer": []
+}
+]
 }
